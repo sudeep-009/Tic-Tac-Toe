@@ -15,8 +15,7 @@ const App = () => {
     setSubmit(true);
   };
 
-  const newGame = (e) => {
-    e.preventDefault();
+  const newGame = () => {
     setSubmit(false);
   };
 

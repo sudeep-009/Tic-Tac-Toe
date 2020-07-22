@@ -16,49 +16,12 @@ const Game = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [gameDrawn, setGameDrawn] = useState(false);
 
-  const checkwinner = () => {
-    let winlist = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
-    for (let i = 0; i < winlist.length; i++) {
-      const [a, b, c] = winlist[i];
-      if (value[a] && value[a] === value[b] && value[a] === value[c]) {
-        setWinner(true);
-        setGameFinish(false);
-        stopTimer();
-        console.log(value.length);
-      } else if (value.every((element) => element !== null)) {
-        stopTimer();
-        setGameDrawn(true);
-      }
-    }
-  };
-
   const onStartGameHandler = () => {
     setGameStart(true);
     setPlayer1NameStyle('playerName playerNameActive');
     setIsActive(true);
     setGameFinish(true);
   };
-
-  const stopTimer = () => {
-    setIsActive(false);
-    setSeconds(0);
-    setGameStart(false);
-  };
-
-  if (seconds === -1) {
-    stopTimer();
-  }
-
-  console.log(value.every((element) => element !== null));
 
   useEffect(() => {
     let interval = null;
@@ -72,12 +35,30 @@ const Game = (props) => {
     return () => clearInterval(interval);
   }, [isActive, seconds]);
 
+  const stopTimer = () => {
+    setIsActive(false);
+    setSeconds(-2);
+    setGameStart(false);
+  };
+
+  const drawnTimer = () => {
+    setIsActive(false);
+    setSeconds(0);
+    setGameStart(false);
+  };
+
+  if (seconds === -1) {
+    stopTimer();
+    setPlayer1NameStyle('playerName');
+    setPlayer2NameStyle('playerName');
+  }
+
   const onClickHandler = (index) => {
     if (value[index] === null && gamestart && gamefinish) {
       let currentValue = value;
       currentValue[index] = player;
       setValue(currentValue);
-      setPlayer(player === 'X' ? 'Y' : 'X');
+      setPlayer(player === 'X' ? 'O' : 'X');
       setPlayerName(
         playerName === props.player2 ? props.player1 : props.player2
       );
@@ -96,6 +77,35 @@ const Game = (props) => {
     checkwinner();
   };
 
+  const checkwinner = () => {
+    let winlist = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    for (let i = 0; i < winlist.length; i++) {
+      const [a, b, c] = winlist[i];
+      if (value[a] && value[a] === value[b] && value[a] === value[c]) {
+        setWinner(true);
+        setGameFinish(false);
+        stopTimer();
+        setPlayer1NameStyle('playerName');
+        setPlayer2NameStyle('playerName');
+      }
+    }
+    if (value.every((element) => element !== null)) {
+      drawnTimer();
+      setGameDrawn(true);
+      setPlayer1NameStyle('playerName');
+      setPlayer2NameStyle('playerName');
+    }
+  };
+
   const onResetHandler = () => {
     // setGameStart(gamestart);
     setPlayer1NameStyle('playerName');
@@ -111,7 +121,7 @@ const Game = (props) => {
 
   const Winner = winner
     ? `${playerName} wins!`
-    : seconds === 0
+    : seconds === -2
     ? `Time up! ${playerName} wins!`
     : gameDrawn
     ? 'Game drawn'
@@ -120,7 +130,7 @@ const Game = (props) => {
   return (
     <div className="gameContainer">
       <div className="timer">
-        <img src={Timer} className="timerimage" />
+        <img src={Timer} alt="timer" className="timerimage" />
         {isActive ? `${seconds}s remaining` : null}
       </div>
 
@@ -153,8 +163,8 @@ const Game = (props) => {
         <button onClick={() => onResetHandler()} className="resetButton">
           Reset
         </button>
-        <button onClick={(e) => props.newGame(e)} className="newGameButton">
-          New Game
+        <button onClick={() => props.newGame()} className="newGameButton">
+          New Players
         </button>
       </div>
 
