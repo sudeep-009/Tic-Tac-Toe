@@ -1,0 +1,22 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+}
+.logo {
+  height: 250px;
+  width: 250px;
+  background: inherit;
+}
+.submitButton {
+  width: 150px;
+  margin-top: 10px;
+  background: grey;
+  color: white;
+}
+.submitButton:hover {
+  background: #00ff00;
+}
